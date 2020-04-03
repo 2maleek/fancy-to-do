@@ -1,11 +1,67 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const Todo = sequelize.define('Todo', {
-    title: DataTypes.STRING,
-    description: DataTypes.STRING,
-    status: DataTypes.STRING,
-    due_date: DataTypes.DATE
-  }, {});
+  const { Model } = sequelize.Sequelize
+  class Todo extends Model {}
+  Todo.init({
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'title can\'t be null'
+        },
+        notEmpty: {
+          msg: 'title can\'t be empty'
+        }
+      }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'description can\'t be null'
+        },
+        notEmpty: {
+          msg: 'description can\'t be empty'
+        }
+      }
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'status can\'t be null'
+        },
+        notEmpty: {
+          msg: 'status can\'t be empty'
+        }
+      }
+    },
+    due_date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'due_date can\'t be null'
+        },
+        notEmpty: {
+          msg: 'due_date can\'t be empty'
+        }
+      }
+    },
+  }, 
+  { 
+    hooks: {
+      beforeSave: (todo, options) => {
+        console.log('MAsuk')
+        if(todo.status !== 'Complete'){
+          todo.status = 'Incomplete'
+        }
+      }
+    },
+    sequelize })
   Todo.associate = function(models) {
     // associations can be defined here
   };
