@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
+  <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+  <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@3/dark.css" rel="stylesheet">
+  <title>Todos App</title>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light todos" id="navbar">
+    <a class="navbar-brand" href="#navbar">Your Todos</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        
+      </ul>
+      
+      <input class="form-control mr-2" type="search" placeholder="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0 mr-3" type="submit">Search</button>
+      <button class="btn btn-outline-danger my-2 my-sm-0" type="submit" id="logout">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    
+    <div id="errorMessage">
+
+    </div>
+
+    <div id="registerForm" class="todos mt-5">
+      <div class="row align-items-center">
+        <div class="col-sm-12 col-md-8"></div>
+        <div class="col">
+          <form id="register">
+            <div class="form-group">
+              <label for="">Name</label>
+              <input type="text" class="form-control" id="nameRegister">
+            </div>
+            <div class="form-group">
+              <label for="">Email address</label>
+              <input type="email" class="form-control" id="emailRegister">
+            </div>
+            <div class="form-group">
+              <label for="">Password</label>
+              <input type="password" class="form-control" id="passwordRegister">
+            </div>
+            <button type="submit" class="btn btn-primary">Signup</button>
+          </form>
+          <p>Already have an account <a class="btn btn-outline-info" id="signinForm">Signin here</a></p>
+        </div>
+      </div>
+    </div>
+  
+    <div id="loginForm" class="todos mt-5">
+      <div class="row align-items-center">
+        <div class="col-sm-12 col-md-8"></div>
+        <div class="col">
+          <form id="login">
+            <div class="form-group">
+              <label for="">Email address</label>
+              <input type="email" class="form-control" id="emailLogin">
+            </div>
+            <div class="form-group">
+              <label for="">Password</label>
+              <input type="password" class="form-control" id="passwordLogin">
+            </div>
+            <button type="submit" class="btn btn-primary">Signin</button>
+          </form>
+          <p>Don't have an account ?<a class="btn btn-outline-info" id="signupForm">Signup here</a></p>
+        </div>
+      </div>
+    </div>
+  
+    <div id="home" class="todos">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Mark</td>
+            <td>Otto</td>
+            <td>@mdo</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Jacob</td>
+            <td>Thornton</td>
+            <td>@fat</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td colspan="2">Larry the Bird</td>
+            <td>@twitter</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script> -->
+<script src="./assets/js/jquery.js"></script>
+<script src="./assets/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script src="./assets/js/main.js"></script>
+</body>
+</html>
