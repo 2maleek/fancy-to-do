@@ -20,10 +20,14 @@ class Controller {
   static getAllTodos(req, res, next) {
     Todo.findAll()
       .then(data => {
-        res.status(200).json(data)
+        if(data) {
+          res.status(200).json(data)
+        }else{
+          next({status: 404, message: 'Todos is empty!'})
+        }
       })
       .catch(err => {
-        res.status(400).json(err)
+        next(err)
       })
   }
 
@@ -33,10 +37,14 @@ class Controller {
         where: { id }
     })
       .then(data => {
-        res.status(200).json(data)
+        if(data){
+          res.status(200).json(data)
+        }else{
+          next({status: 404, message: 'Todo not found!'})
+        }
       })
       .catch(err => {
-        res.status(400).json(err)
+        next(err)
       })
   }
 
@@ -52,11 +60,20 @@ class Controller {
     Todo.update(input, {
       where: { id }
     })
-      .then(data => {
-        res.status(200).json(data)
+      .then(() => {
+        return Todo.findOne({
+          where: { id }
+        })
       })
+      .then(data => {
+          if(data){
+            res.status(200).json(data)
+          }else{
+            next({status: 404, message: 'Todo not found!'})
+          }
+        })
       .catch(err => {
-        res.status(400).json(err)
+        next(err)
       })
   }
 
