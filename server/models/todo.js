@@ -51,6 +51,18 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    UserId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: 'UserID can\'t be null'
+        },
+        notEmpty: {
+          msg: 'UserID can\'t be empty'
+        }
+      }
+    },
   }, 
   { 
     hooks: {
