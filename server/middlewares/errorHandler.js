@@ -6,6 +6,8 @@ module.exports = (err, req, res, next) => {
         err.errors.forEach(element => {
             errors.push(element.message)
         });
+        res.status(400).json(errors
+            )
     }else if(err.status === 400){
         res.status(400).json(err)
     }else if(err.status === 401){
