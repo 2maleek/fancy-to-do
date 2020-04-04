@@ -128,34 +128,50 @@ class Controller {
         status,
         due_date,
     }
-    Todo.update(input, {
-      where: { id }
-    })
-      .then(() => {
-        return Todo.findOne({
+    Todo.findByPk(id)
+    .then(isFound => {
+      if(isFound){
+        return Todo.update(input, {
           where: { id }
         })
+      }else {
+        next({status: 404, message: 'Todo not found!'})
+      }
+    })
+    .then(() => {
+      return Todo.findOne({
+        where: { id }
       })
-      .then(data => {
-          if(data){
-            res.status(200).json({message: 'updated!', data})
-          }else{
-            next({status: 404, message: 'Todo not found!'})
-          }
-        })
-      .catch(err => {
-        next(err)
+    })
+    .then(data => {
+        if(data){
+          res.status(200).json(data)
+        }else{
+          next({status: 404, message: 'Todo not found!'})
+        }
       })
+    .catch(err => {
+      next(err)
+    })
   }
 
   static deleteTodo(req, res, next) {
     let id = req.params.id
 
-    Todo.destroy({
-      where: { id }
-    })
-      .then(data => {
-        res.status(200).json({message: 'deleted!'})
+    let data;
+    Todo.findByPk(id)
+      .then(isFound => {
+        if(isFound){
+          data = isFound
+          return Todo.destroy({
+            where: { id }
+          })
+        }else{
+          next({status: 404, message: 'Todo not found!'})
+        }
+      })
+      .then(() => {
+        res.status(200).json(data)
       })
       .catch(err => {
         next(err)
