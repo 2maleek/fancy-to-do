@@ -17,6 +17,16 @@ $('#signinForm').on('click', function() {
 $('#logout').on('click', function() {
   logout()
 })
+$('#addTodo').on('click', function() {
+  $('.todos').hide()
+  $('#addForm').show()
+  $('#navbar').show()
+})
+$('.cancelSave').on('click', function() {
+  $('.todos').hide()
+  $('#home').show()
+  $('#navbar').show()
+})
 
 $('#register').submit( function(e) {
   e.preventDefault()
@@ -25,6 +35,14 @@ $('#register').submit( function(e) {
 $('#login').submit( function(e) {
   e.preventDefault()
   login()
+})
+$('#add').submit( function(e) {
+  e.preventDefault()
+  add()
+})
+$('#update').submit(function (e) {
+  e.preventDefault()
+  edit()
 })
 
 function failLogin() {
@@ -35,6 +53,8 @@ function successLogin() {
   $('.todos').hide()
   $('#home').show()
   $('#navbar').show()
+  reset()
+  getTodos()
 }
 
 function register() {
@@ -43,14 +63,13 @@ function register() {
     email: $('#emailRegister').val(),
     password: $('#passwordRegister').val(),
   }
-  console.log(data)
   $.ajax({
     type: 'POST',
     url: `${BASE_URL}/register`,
     data: data,
     dataType: 'json'
   })
-  .done(result => {
+  .done(() => {
     
     const Toast = Swal.mixin({
       toast: true,
@@ -101,7 +120,6 @@ function login() {
     email: $('#emailLogin').val(),
     password: $('#passwordLogin').val(),
   }
-  console.log(data)
   $.ajax({
     type: 'POST',
     url: `${BASE_URL}/login`,
@@ -109,9 +127,7 @@ function login() {
     dataType: 'json'
   })
   .done(result => {
-    
-    console.log(result)
-    const Toast = Swal.mixin({
+      const Toast = Swal.mixin({
       toast: true,
       position: 'top-end',
       showConfirmButton: false,
@@ -167,4 +183,215 @@ function reset() {
   $('#passwordRegister').val('')
   $('#emailLogin').val('')
   $('#passwordLogin').val('')
+  $('#title').val('')
+  $('#description').val('')
+  $('#status').val('')
+  $('#due_date').val('')
+  $('#titleUpdate').val('')
+  $('#descriptionUpdate').val('')
+  $('#statusUpdate').val('')
+  $('#due_dateUpdate').val('')
+}
+
+function getTodos() {
+  $.ajax({
+    type: 'GET',
+    url: `${BASE_URL}/todos`,
+    dataType: 'json',
+    beforeSend: function(req) {
+      req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+    }
+  })
+  .done(todos => {
+    $('#showTodos').empty()
+    let i = 1;
+    todos.forEach(todo => {
+      $('#showTodos').append(`
+        <tr>
+          <th scope="row">${i++}</th>
+          <td>${todo.title}</td>
+          <td>${todo.description}</td>
+          <td>${(todo.due_date).substring(0, 10)}</td>
+          <td>${todo.status}</td>
+          <td>QR</td>
+          <td>
+            <button type="button" class="btn btn-sm btn-primary" onclick="editForm('${todo.id}')">Edit</button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="deleteTodo('${todo.id}')">Delete</button>
+          </td>
+        </tr>
+      `)
+    })
+  })
+  .fail(err => {
+    $('#errorMessage').append(`
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Internal server error</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    `)
+  })
+}
+
+
+function add() {
+  let data = {
+    title: $('#title').val(),
+    description: $('#description').val(),
+    status: $('#status').val(),
+    due_date: $('#due_date').val(),
+  }
+  console.log(data)
+  $.ajax({
+    type: 'POST',
+    url: `${BASE_URL}/todos`,
+    data: data,
+    beforeSend: function(req) {
+      req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+    } 
+  })
+  .done(() => {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      onOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    })
+    
+    Toast.fire({
+      icon: 'success',
+      title: 'Added New Todo'
+    })
+    successLogin()
+  })
+  .fail((err) => {
+    $('#errorMessage').append(`
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>Internal server error</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  `)
+  })
+}
+
+function editForm(id) {
+  $('.todos').hide()
+  $('#updateForm').show()
+  $('#navbar').show()
+  $.ajax({
+    type: 'GET',
+    url: `${BASE_URL}/todos/${id}`,
+    beforeSend: function(req) {
+      req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+    }
+  })
+  .done(todo => {
+    $('#idUpdate').val(`${todo.id}`)
+    $('#titleUpdate').val(`${todo.title}`)
+    $('#descriptionUpdate').val(`${todo.description}`)
+    $('#statusUpdate').val(`${todo.status}`)
+    $('#due_dateUpdate').val(`${todo["due_date"].substr(0, 10)}`)
+    console.log($('#idUpdate').val())
+  })
+  .fail(err => {
+    console.log(err)
+  })
+}
+
+function edit() {
+  let id = $('#idUpdate').val()
+  let data = {
+    title: $('#titleUpdate').val(),
+    description: $('#descriptionUpdate').val(),
+    status: $('#statusUpdate').val(),
+    due_date: $('#due_dateUpdate').val(),
+  }
+
+ $.ajax({
+   type: 'PUT',
+   url: `${BASE_URL}/todos/${id}`,
+   data: data,
+   dataType: 'json',
+   beforeSend: function(req) {
+     req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+   }
+ })
+ .done(() => {
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    onOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer)
+      toast.addEventListener('mouseleave', Swal.resumeTimer)
+    }
+  })
+  
+  Toast.fire({
+    icon: 'success',
+    title: 'Todo has been updated!'
+  })
+  successLogin()
+ })
+ .fail((err) => {
+    $('#errorMessage').append(`
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Internal server error</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    `)
+ })
+}
+
+function deleteTodo(id) {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then((result) => {
+    if (result.value) {
+      $.ajax({
+        type: 'DELETE',
+        url: `${BASE_URL}/todos/${id}`,
+        dataType: 'json',
+        beforeSend: function(req) {
+          req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+        }
+      })
+      .done(() => {
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        )
+        successLogin()
+      })
+      .fail((err) => {
+        $('#errorMessage').append(`
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>Internal server error</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        `)
+      })
+    }
+  })
 }
