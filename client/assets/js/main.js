@@ -206,12 +206,14 @@ function getTodos() {
     $('#showTodos').empty()
     let i = 1;
     todos.forEach(todo => {
+      let datetime = (todo.due_date).substring(0, 10).split('-')
+      date = `${datetime[2]}-${datetime[1]}-${datetime[0]}`
       $('#showTodos').append(`
         <tr>
           <th scope="row">${i++}</th>
           <td>${todo.title}</td>
           <td>${todo.description}</td>
-          <td>${(todo.due_date).substring(0, 10)}</td>
+          <td>${date}</td>
           <td>${todo.status}</td>
           <td>QR</td>
           <td>
@@ -225,12 +227,13 @@ function getTodos() {
   .fail(err => {
     $('#errorMessage').append(`
       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong>Internal server error</strong>
+        <strong>Your Session has been expired</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
     `)
+    logout()
   })
 }
 
