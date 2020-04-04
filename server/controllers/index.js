@@ -2,6 +2,9 @@ const { Todo, User } = require('../models')
 const { compare } = require('../helpers/bcrypt')
 const jwt = require('jsonwebtoken')
 const decode = require('../helpers/decode')
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client(process.env.CLIENT_ID);
+
 
 class Controller {
   static login(req, res, next) {
@@ -60,6 +63,53 @@ class Controller {
       .catch(err => {
         next(err)
       })
+  }
+
+  static googleSignIn(req, res, next) {
+    let token  = req.body.token
+    let email = null
+    let name = null
+
+    client.verifyIdToken({
+			idToken: token,
+			audience: process.env.CLIENT_ID
+		})
+		.then(ticket => {
+			return ticket.getPayload()
+		})
+		.then(payload => {
+      email = payload.email
+      name = payload.name
+			return User.findOne({
+				where: {
+					email: payload.email
+				}
+			})
+		})
+		.then(data => {
+			if(!data){
+				return User.create({
+          name: name,
+					email: email,
+					password: '123'
+				})
+			}else{
+        return data 
+			}
+		})
+		.then(data => {
+      console.log(data)
+      console.log('MAsuuukkkkk')
+      let token = jwt.sign({
+        UserId: data.id,
+        name: data.name,
+        email: data.email,
+      }, process.env.SECRET, { expiresIn: 60 * 60 })
+      res.status(200).json({access_token: token})
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 
   static addTodo(req, res, next) {
