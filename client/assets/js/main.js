@@ -173,6 +173,10 @@ function login() {
 
 function logout() {
   localStorage.removeItem('access_token')
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+  });
   failLogin()
   reset()
 }
@@ -208,6 +212,9 @@ function getTodos() {
     todos.forEach(todo => {
       let datetime = (todo.due_date).substring(0, 10).split('-')
       date = `${datetime[2]}-${datetime[1]}-${datetime[0]}`
+
+      let text = `Your Todo \n\nTitle: ${todo.title}\nDescription: ${todo.description}\nDue Date: ${date}\nStatus: ${todo.status}`
+      let encoded = encodeURI(text)
       $('#showTodos').append(`
         <tr>
           <th scope="row">${i++}</th>
@@ -215,7 +222,7 @@ function getTodos() {
           <td>${todo.description}</td>
           <td>${date}</td>
           <td>${todo.status}</td>
-          <td>QR</td>
+          <td><img src="http://api.qrserver.com/v1/create-qr-code/?data=${encoded}&size=100x100"></td>
           <td>
             <button type="button" class="btn btn-sm btn-primary" onclick="editForm('${todo.id}')">Edit</button>
             <button type="button" class="btn btn-sm btn-danger" onclick="deleteTodo('${todo.id}')">Delete</button>
@@ -396,5 +403,25 @@ function deleteTodo(id) {
         `)
       })
     }
+  })
+}
+
+function onSignIn(googleUser) {
+  var id_token = googleUser.getAuthResponse().id_token
+  sendGoogleToken(id_token)
+}
+
+function sendGoogleToken(id_token) {
+  $.ajax({
+    type: 'POST',
+    url: `${BASE_URL}/googleSignIn`,
+    data: { 'token': id_token }
+  })
+  .done(response => {
+    localStorage.setItem('access_token', response.access_token)
+    successLogin()
+  })
+  .fail(err => {
+    console.log(err)
   })
 }
