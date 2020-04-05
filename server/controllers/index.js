@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 const decode = require('../helpers/decode')
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.CLIENT_ID);
-
+const axios = require('axios')
 
 class Controller {
   static login(req, res, next) {
@@ -109,6 +109,66 @@ class Controller {
     })
     .catch(err => {
       console.log(err)
+    })
+  }
+
+  static githubSignIn(req, res, next) {
+    const CLIENT_ID = process.env.CLIENT_ID_GITHUB
+    const CLIENT_SECRET = process.env.CLIENT_SECRET_GITHUB
+    const {requestToken} = req.body
+    let email, name
+
+    console.log(requestToken)
+    axios({
+      method: 'post',
+      url: `https://github.com/login/oauth/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${requestToken}`,
+      headers: {
+        accept: 'application/json'
+      }
+    })
+    .then(response => {
+      const access_token = response.data.access_token
+      console.log(response.data)
+      return axios({
+        method: 'get',
+        url: 'https://api.github.com/user',
+        headers: {
+          Authorization: `token ${access_token}`
+        }
+      })
+    })
+    .then(info => {
+      email = `${info.data.login}@github.com`
+      name = info.data.name
+      return User.findOne({
+        where: { email }
+      })
+    })
+    .then(isFound => {
+      if(isFound) {
+        return isFound
+      }else {
+        return User.create({
+          name,
+          email,
+          password: '123'
+        })
+      }
+    })
+    .then(user => {
+      let token = jwt.sign({
+        UserId: user.id,
+        name: user.name,
+        email: user.email,
+      }, process.env.SECRET, { expiresIn: 60 * 60 })
+      res.status(200).json({access_token: token})
+    })
+    .catch(err => {
+      if(err.response.status === 401){
+        next({status: 401, message: 'Bad credentials'})
+      }else{
+        next(err)
+      }
     })
   }
 
@@ -226,6 +286,20 @@ class Controller {
       .catch(err => {
         next(err)
       })
+  }
+
+  static getAllUser(req, res, next) {
+    User.findAll()
+    .then(users => {
+      if(users){
+        res.status(200).json(users)
+      }else {
+        next({status: 404, message: 'User not found'})
+      }
+    })
+    .catch(err => {
+      console.log(err)
+    })
   }
 }
 
