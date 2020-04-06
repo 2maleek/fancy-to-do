@@ -24,7 +24,7 @@ _Request Body_
 }
 ```
 
-### Success Response: ###
+#### Success Response: ####
 _Response (201 - Created)_
 ```
 {
@@ -37,7 +37,7 @@ _Response (201 - Created)_
 }
 ```
 
-### Error Response: ###
+#### Error Response: ####
 _Response (400 - Bad Request)_
 ```
 [
@@ -69,7 +69,7 @@ _Request Body_
 }
 ```
 
-### Success Response: ###
+#### Success Response: ####
 _Response (200 - Ok)_
 ```
 {
@@ -77,7 +77,7 @@ _Response (200 - Ok)_
 }
 ```
 
-### Error Response: ###
+#### Error Response: ####
 
 _Response (400 - Bad Request)_
 ```
@@ -118,7 +118,7 @@ _Request Body_
 }
 ```
 
-### Success Response: ###
+#### Success Response: ####
 _Response (201 - Created)_
 ```
 {
@@ -133,7 +133,7 @@ _Response (201 - Created)_
 }
 ```
 
-### Error Response: ###
+#### Error Response: ####
 _Response (400 - Bad Request)_
 ```
 [
@@ -163,7 +163,7 @@ _Request Body_
 not needed
 ```
 
-### Success Response: ###
+#### Success Response: ####
 _Response (200 - Ok)_
 ```
 [
@@ -190,7 +190,7 @@ _Response (200 - Ok)_
 ]
 ```
 
-### Error Response: ###
+#### Error Response: ####
 _Response (401 - Unauthorized)_
 ```
 {
@@ -214,7 +214,7 @@ _Request Body_
 not needed
 ```
 
-### Success Response: ###
+#### Success Response: ####
 _Response (200 - Ok)_
 ```
 {
@@ -229,7 +229,7 @@ _Response (200 - Ok)_
 }
 ```
 
-### Error Response: ###
+#### Error Response: ####
 _Response (401 - Unauthorized)_
 ```
 {
@@ -271,7 +271,7 @@ _Request Body_
 }
 ```
 
-### Success Response: ###
+#### Success Response: ####
 _Response (201 - Created)_
 ```
 {
@@ -286,7 +286,7 @@ _Response (201 - Created)_
 }
 ```
 
-### Error Response: ###
+#### Error Response: ####
 _Response (401 - Unauthorized)_
 ```
 {
@@ -325,7 +325,7 @@ _Request Body_
 not needed
 ```
 
-### Success Response: ###
+#### Success Response: ####
 _Response (200 - Ok)_
 ```
 {
@@ -340,7 +340,7 @@ _Response (200 - Ok)_
 }
 ```
 
-### Error Response: ###
+#### Error Response: ####
 _Response (401 - Unauthorized)_
 ```
 {
