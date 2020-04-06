@@ -19,8 +19,8 @@ _Request Body_
 ```
 {
   "name": "Malik",
-	"email": "malikmail.com",
-	"password": "test"
+  "email": "malikmail.com",
+  "password": "test"
 }
 ```
 
@@ -28,12 +28,12 @@ _Request Body_
 _Response (201 - Created)_
 ```
 {
-	"id": 6,
-	"name": "Malik",
-	"email": "malik@mail.com",
-	"password": "$2b$10$xfLIEC1yVj5TYtQ3PZw/c.0D97Ij5NOPC4BMOBdA9JSbPC3MAhvue",
-	"updatedAt": "2020-04-06T15:41:15.278Z",
-	"createdAt": "2020-04-06T15:41:15.278Z"
+    "id": 6,
+    "name": "Malik",
+    "email": "malik@mail.com",
+    "password": "$2b$10$xfLIEC1yVj5TYtQ3PZw/c.0D97Ij5NOPC4BMOBdA9JSbPC3MAhvue",
+    "updatedAt": "2020-04-06T15:41:15.278Z",
+    "createdAt": "2020-04-06T15:41:15.278Z"
 }
 ```
 
@@ -65,7 +65,7 @@ _Request Body_
 ```
 {
   "email": "malikmail.com",
-	"password": "test"
+  "password": "test"
 }
 ```
 
@@ -73,7 +73,7 @@ _Request Body_
 _Response (200 - Ok)_
 ```
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjYsIm5hbWUiOiJNYWxpayIsImVtYWlsIjoibWFsaWtAbWFpbC5jb20iLCJpYXQiOjE1ODYxOTEzNjksImV4cCI6MTU4NjE5NDk2OX0.WNLicaqoVUNPgvqq_5y4bzXy9oflshME6ARWHk1z1Po"
+     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOjYsIm5hbWUiOiJNYWxpayIsImVtYWlsIjoibWFsaWtAbWFpbC5jb20iLCJpYXQiOjE1ODYxOTEzNjksImV4cCI6MTU4NjE5NDk2OX0.WNLicaqoVUNPgvqq_5y4bzXy9oflshME6ARWHk1z1Po"
 }
 ```
 
@@ -112,9 +112,9 @@ _Request Body_
 ```
 {
   "title": "belajar nodejs"
-	"description": "belajar nodejs"
-	"status": "incomplete"
-	"due_date": "2020-01-01"
+  "description": "belajar nodejs"
+  "status": "incomplete"
+  "due_date": "2020-01-01"
 }
 ```
 
@@ -122,14 +122,14 @@ _Request Body_
 _Response (201 - Created)_
 ```
 {
-	"id": 13,
-	"title": "belajar nodejs",
-	"description": "belajar nodejs",
-	"status": "Incomplete",
-	"due_date": "2020-01-01T00:00:00.000Z",
-	"UserId": 6,
-	"updatedAt": "2020-04-06T16:53:36.080Z",
-	"createdAt": "2020-04-06T16:53:36.080Z"
+    "id": 13,
+    "title": "belajar nodejs",
+    "description": "belajar nodejs",
+    "status": "Incomplete",
+    "due_date": "2020-01-01T00:00:00.000Z",
+    "UserId": 6,
+    "updatedAt": "2020-04-06T16:53:36.080Z",
+    "createdAt": "2020-04-06T16:53:36.080Z"
 }
 ```
 
@@ -137,13 +137,13 @@ _Response (201 - Created)_
 _Response (400 - Bad Request)_
 ```
 [
-	"description can't be empty"
+  "description can't be empty"
 ]
 ```
 _Response (401 - Unauthorized)_
 ```
 {
-	"message": "Not authenticated!"
+  "message": "Not authenticated!"
 }
 ```
 
@@ -167,26 +167,26 @@ not needed
 _Response (200 - Ok)_
 ```
 [
-	{
-		"id": 14,
-		"title": "belajar nodejs",
-		"description": "belajar nodejs Ampe mahir",
-		"status": "Complete",
-		"due_date": "2020-01-01T00:00:00.000Z",
-		"UserId": 6,
-		"createdAt": "2020-04-06T17:00:37.435Z",
-		"updatedAt": "2020-04-06T17:04:42.252Z"
-	},
-	{
-		"id": 13,
-		"title": "belajar nodejs",
-		"description": "belajar nodejs Ampe mahir",
-		"status": "Complete",
-		"due_date": "2020-01-01T00:00:00.000Z",
-		"UserId": 6,
-		"createdAt": "2020-04-06T16:53:36.080Z",
-		"updatedAt": "2020-04-06T17:05:51.056Z"
-	}
+  {
+  "id": 14,
+  "title": "belajar nodejs",
+  "description": "belajar nodejs Ampe mahir",
+  "status": "Complete",
+  "due_date": "2020-01-01T00:00:00.000Z",
+  "UserId": 6,
+  "createdAt": "2020-04-06T17:00:37.435Z",
+  "updatedAt": "2020-04-06T17:04:42.252Z"
+  },
+  {
+  "id": 13,
+  "title": "belajar nodejs",
+  "description": "belajar nodejs Ampe mahir",
+  "status": "Complete",
+  "due_date": "2020-01-01T00:00:00.000Z",
+  "UserId": 6,
+  "createdAt": "2020-04-06T16:53:36.080Z",
+  "updatedAt": "2020-04-06T17:05:51.056Z"
+  }
 ]
 ```
 
@@ -194,7 +194,7 @@ _Response (200 - Ok)_
 _Response (401 - Unauthorized)_
 ```
 {
-	"message": "Not authenticated!"
+  "message": "Not authenticated!"
 }
 ```
 
@@ -218,14 +218,14 @@ not needed
 _Response (200 - Ok)_
 ```
 {
-	"id": 13,
-	"title": "belajar nodejs",
-	"description": "belajar nodejs Ampe mahir",
-	"status": "Complete",
-	"due_date": "2020-01-01T00:00:00.000Z",
-	"UserId": 6,
-	"createdAt": "2020-04-06T17:00:37.435Z",
-	"updatedAt": "2020-04-06T17:04:42.252Z"
+    "id": 13,
+    "title": "belajar nodejs",
+    "description": "belajar nodejs Ampe mahir",
+    "status": "Complete",
+    "due_date": "2020-01-01T00:00:00.000Z",
+    "UserId": 6,
+    "createdAt": "2020-04-06T17:00:37.435Z",
+    "updatedAt": "2020-04-06T17:04:42.252Z"
 }
 ```
 
@@ -233,19 +233,19 @@ _Response (200 - Ok)_
 _Response (401 - Unauthorized)_
 ```
 {
-	"message": "Not authenticated!"
+  "message": "Not authenticated!"
 }
 ```
 _Response (403 - Forbidden)_
 ```
 {
-	"message": "Forbidden access!"
+  "message": "Forbidden access!"
 }
 ```
 _Response (404 - Not Found)_
 ```
 {
-	"message": "Todo not found! "
+  "message": "Todo not found! "
 }
 ```
 
@@ -265,9 +265,9 @@ _Request Body_
 ```
 {
   "title": "belajar nodejs"
-	"description": "belajar nodejs Ampe mahir"
-	"status": "Complete"
-	"due_date": "2020-01-01"
+  "description": "belajar nodejs Ampe mahir"
+  "status": "Complete"
+  "due_date": "2020-01-01"
 }
 ```
 
@@ -275,14 +275,14 @@ _Request Body_
 _Response (201 - Created)_
 ```
 {
-	"id": 13,
-	"title": "belajar nodejs",
-	"description": "belajar nodejs Ampe mahir",
-	"status": "Complete",
-	"due_date": "2020-01-01T00:00:00.000Z",
-	"UserId": 6,
-	"createdAt": "2020-04-06T17:00:37.435Z",
-	"updatedAt": "2020-04-06T17:04:42.252Z"
+    "id": 13,
+    "title": "belajar nodejs",
+    "description": "belajar nodejs Ampe mahir",
+    "status": "Complete",
+    "due_date": "2020-01-01T00:00:00.000Z",
+    "UserId": 6,
+    "createdAt": "2020-04-06T17:00:37.435Z",
+    "updatedAt": "2020-04-06T17:04:42.252Z"
 }
 ```
 
@@ -290,19 +290,19 @@ _Response (201 - Created)_
 _Response (401 - Unauthorized)_
 ```
 {
-	"message": "Not authenticated!"
+  "message": "Not authenticated!"
 }
 ```
 _Response (403 - Forbidden)_
 ```
 {
-	"message": "Forbidden access!"
+  "message": "Forbidden access!"
 }
 ```
 _Response (404 - Not Found)_
 ```
 {
-	"message": "Todo not found! "
+  "message": "Todo not found! "
 }
 ```
 
@@ -329,14 +329,14 @@ not needed
 _Response (200 - Ok)_
 ```
 {
-	"id": 15,
-	"title": "belajar nodejs",
-	"description": "belajar nodejs Ampe mahir",
-	"status": "Complete",
-	"due_date": "2020-01-01T00:00:00.000Z",
-	"UserId": 6,
-	"createdAt": "2020-04-06T17:04:12.393Z",
-	"updatedAt": "2020-04-06T17:04:12.393Z"
+  "id": 15,
+  "title": "belajar nodejs",
+  "description": "belajar nodejs Ampe mahir",
+  "status": "Complete",
+  "due_date": "2020-01-01T00:00:00.000Z",
+  "UserId": 6,
+  "createdAt": "2020-04-06T17:04:12.393Z",
+  "updatedAt": "2020-04-06T17:04:12.393Z"
 }
 ```
 
@@ -344,19 +344,19 @@ _Response (200 - Ok)_
 _Response (401 - Unauthorized)_
 ```
 {
-	"message": "Not authenticated!"
+  "message": "Not authenticated!"
 }
 ```
 _Response (403 - Forbidden)_
 ```
 {
-	"message": "Forbidden access!"
+  "message": "Forbidden access!"
 }
 ```
 _Response (404 - Not Found)_
 ```
 {
-	"message": "Todo not found! "
+  "message": "Todo not found! "
 }
 ```
 
