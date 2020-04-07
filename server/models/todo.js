@@ -76,6 +76,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize })
   Todo.associate = function(models) {
     // associations can be defined here
+    // Todo.belongsToMany(models.User, { through: models.Member, foreignKey: 'TodoId' });
+    // Todo.hasMany(models.User)
+
   };
   return Todo;
 };
