@@ -1,4 +1,4 @@
-const { Todo, User } = require('../models')
+const { Todo, User, Member } = require('../models')
 const { compare } = require('../helpers/bcrypt')
 const jwt = require('jsonwebtoken')
 const decode = require('../helpers/decode')
@@ -20,7 +20,7 @@ class Controller {
         name = user.name
         return compare(password, user.password)
       }else{
-        next({status: 400, message: 'user not registered!'})
+        next({status: 404, message: 'user not registered!'})
       }
     })
     .then(result => {
@@ -48,7 +48,7 @@ class Controller {
     })
       .then(user => {
         if(user){
-          next({status: 400, message: 'Email has been registered!'})
+          next({status: 409, message: 'Email Already registered!'})
         }else {
           return User.create({
             name,
@@ -98,8 +98,6 @@ class Controller {
 			}
 		})
 		.then(data => {
-      console.log(data)
-      console.log('MAsuuukkkkk')
       let token = jwt.sign({
         UserId: data.id,
         name: data.name,
@@ -108,7 +106,6 @@ class Controller {
       res.status(200).json({access_token: token})
     })
     .catch(err => {
-      console.log(err)
     })
   }
 
@@ -118,7 +115,6 @@ class Controller {
     const {requestToken} = req.body
     let email, name
 
-    console.log(requestToken)
     axios({
       method: 'post',
       url: `https://github.com/login/oauth/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&code=${requestToken}`,
@@ -128,7 +124,6 @@ class Controller {
     })
     .then(response => {
       const access_token = response.data.access_token
-      console.log(response.data)
       return axios({
         method: 'get',
         url: 'https://api.github.com/user',
@@ -176,7 +171,6 @@ class Controller {
     let userData = decode(req.headers.access_token)
     let UserId = userData.UserId
 
-    console.log(userData)
     let { title, description, status, due_date } = req.body
     Todo.create({
         title,
@@ -288,8 +282,53 @@ class Controller {
       })
   }
 
-  static getAllUser(req, res, next) {
-    User.findAll()
+  static addMember(req, res, next) {
+    let userData = decode(req.headers.access_token)
+    let OwnerId = userData.UserId
+  
+    let { UserId, TodoId } = req.body
+    let input = {
+      UserId,
+      TodoId,
+      OwnerId
+    }
+    Member.create(input)
+    .then(newMember => {
+      res.status(201).json(newMember)
+    })
+    .catch(err => {
+      next(err)
+    })
+  }
+
+  static getAllMember(req, res, next) {
+    let userData = decode(req.headers.access_token)
+    let OwnerId = userData.UserId
+
+    console.log('>>>>>>>>>>>>>>>>>>>')
+    Member.findAll({
+      where: { OwnerId },
+      include: [ Todo, User ]
+    })
+    .then(members => {
+      console.log('<<<<<<<<<<<<<<')
+      if(members){
+        res.status(200).json(members)
+      }else {
+        next({status: 404, message: 'Member not found'})
+      }
+    })
+    .catch(err => {
+      console.log(err)
+      next(err)
+    })
+  }
+
+  static getUser(req, res, next) {
+    const { email } = req.body
+    User.findOne({
+      where: { email }
+    })
     .then(users => {
       if(users){
         res.status(200).json(users)
@@ -298,7 +337,34 @@ class Controller {
       }
     })
     .catch(err => {
+    })
+  }
+
+  static getInfoUser(req, res, next) {
+    let userData = decode(req.headers.access_token)
+    res.status(200).json(userData)
+  }
+
+  static getAllProjects(req, res, next) {
+    let userData = decode(req.headers.access_token)
+    let UserId = userData.UserId
+
+    console.log('>>>>>>>>>>>>>>>>>>>')
+    Member.findAll({
+      where: { UserId },
+      include: [ Todo ]
+    })
+    .then(members => {
+      console.log('<<<<<<<<<<<<<<')
+      if(members){
+        res.status(200).json(members)
+      }else {
+        next({status: 404, message: 'Member not found'})
+      }
+    })
+    .catch(err => {
       console.log(err)
+      next(err)
     })
   }
 }
