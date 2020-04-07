@@ -52,6 +52,13 @@ _Response (409 - conflict)_
 }
 ```
 
+_Response (500 - Internal Server Error)_
+```
+{
+  "message": "Internal Server Error"
+}
+```
+
 ### POST /login
 
 > Process Login
@@ -93,9 +100,12 @@ _Response (404 - Not Found)_
 }
 ```
 
-
-
-
+_Response (500 - Internal Server Error)_
+```
+{
+  "message": "Internal Server Error"
+}
+```
 
 ### POST /todos
 
@@ -144,6 +154,13 @@ _Response (401 - Unauthorized)_
 ```
 {
   "message": "Not authenticated!"
+}
+```
+
+_Response (500 - Internal Server Error)_
+```
+{
+  "message": "Internal Server Error"
 }
 ```
 
@@ -198,6 +215,13 @@ _Response (401 - Unauthorized)_
 }
 ```
 
+_Response (500 - Internal Server Error)_
+```
+{
+  "message": "Internal Server Error"
+}
+```
+
 ### GET /todos/:id
 
 > Get todo by todo's id
@@ -246,6 +270,13 @@ _Response (404 - Not Found)_
 ```
 {
   "message": "Todo not found! "
+}
+```
+
+_Response (500 - Internal Server Error)_
+```
+{
+  "message": "Internal Server Error"
 }
 ```
 
@@ -305,7 +336,12 @@ _Response (404 - Not Found)_
   "message": "Todo not found! "
 }
 ```
-
+_Response (500 - Internal Server Error)_
+```
+{
+  "message": "Internal Server Error"
+}
+```
 
 
 
@@ -357,5 +393,11 @@ _Response (404 - Not Found)_
 ```
 {
   "message": "Todo not found! "
+}
+```
+_Response (500 - Internal Server Error)_
+```
+{
+  "message": "Internal Server Error"
 }
 ```
