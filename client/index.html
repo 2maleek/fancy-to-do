@@ -6,13 +6,14 @@
   <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
   <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
   <link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@3/dark.css" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/myStyle.css">
   <meta name="google-signin-client_id" content="37897594321-phtiofsekchjjoq3iao7vn4l5hh9k44e.apps.googleusercontent.com">
   <title>Todos App</title>
 </head>
 <body>
 
   <nav class="navbar navbar-expand-sm navbar-light bg-light todos" id="navbar">
-    <a class="navbar-brand" href="#navbar">Your Todos</a>
+    <a class="navbar-brand" href="#navbar" id="username"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -29,6 +30,7 @@
   </nav>
 
   <div class="container-fluid">
+    <div id="loader" style="display: none;"></div>
     
     <div id="errorMessage">
 
@@ -81,8 +83,10 @@
       </div>
     </div>
   
-    <div id="home" class="todos" style="max-height: 90vh; overflow: auto;">
-      <table class="table table-hover">
+    <div id="home" class="todos mt-4" style="max-height: 75vh; overflow: auto;">
+      <h1 class="text-center">TODO LIST</h1>
+      <button class="btn btn-success" id="addTodo">Create Todos</button>
+      <table class="table table-hover mt-3">
         <thead>
           <tr>
             <th scope="col">No</th>
@@ -98,7 +102,38 @@
           
         </tbody>
       </table>
-      <button class="btn btn-success btn-block" id="addTodo">Add Todos</button>
+
+      <hr>
+      <div class="container mt-5">
+        <h2>Invite to project</h2>
+        <form class="form-inline" id="addMember">
+          <div class="form-group mb-2">
+            <select class="custom-select mr-sm-2" id="listProject">
+              <option selected disabled>Select Todos</option>
+            </select>
+          </div>
+          <div class="form-group mx-sm-3 mb-2">
+            <label for="inputPassword2" class="sr-only">Password</label>
+            <input type="text" class="form-control" id="emailMember" placeholder="Member's Email">
+          </div>
+          <button type="submit" class="btn btn-primary mb-2">Invite</button>
+        </form>
+        <hr>
+        <h2 class="text-center mt-3">List Member Projects</h2>
+        <table class="table table-hover mt-4">
+          <thead>
+            <tr>
+              <th scope="col">No</th>
+              <th scope="col">Project</th>
+              <th scope="col">Member</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody id="showMember">
+            
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 

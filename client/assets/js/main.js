@@ -1,14 +1,13 @@
 const BASE_URL = 'http://localhost:3000'
 let myWindow = window
 $(document).ready(function() {
+  if(localStorage.getItem('access_token')){
+    successLogin()
+  }else{
+    reset()
+    failLogin()
+  }
 })
-
-if(localStorage.getItem('access_token')){
-  successLogin()
-}else{
-  reset()
-  failLogin()
-}
 
 $('#signupForm').on('click', function() {
   $('.todos').hide()
@@ -31,27 +30,75 @@ $('.cancelSave').on('click', function() {
   $('#navbar').show()
 })
 $('#signWithGithub').on('click', function() {
+  $('#loader').show()
   myWindow = window.open("https://github.com/login/oauth/authorize?client_id=652637bc2223e60a1218", "myWindow", 'width=350,height=300,scrollbars=no,toolbar=no,screenx=0,screeny=0,location=no,titlebar=no,directories=no,status=no,menubar=no,scrollbars=no');
-  setTimeout(function () {
-    myWindow.githubSignIn()
-  }, 5000)
+  loadingPage()
+  const time = setInterval(function() {
+    if(myWindow.document.readyState === 'complete' || myWindow.document.readyState === 'interactive') {
+      myWindow.githubSignIn()
+      clearInterval(time)
+    }
+  }, 10)
+
 })
 
-$('#register').submit( function(e) {
+$('#register').on('submit', function(e) {
   e.preventDefault()
   register()
 })
-$('#login').submit( function(e) {
+$('#login').on('submit', function(e) {
   e.preventDefault()
   login()
 })
-$('#add').submit( function(e) {
+$('#add').on('submit', function(e) {
   e.preventDefault()
   add()
 })
-$('#update').submit(function (e) {
+$('#update').on('submit',function (e) {
   e.preventDefault()
   edit()
+})
+$('#addMember').on('submit', function(e) {
+  e.preventDefault()
+  const email = $('#emailMember').val()
+  $('#loader').show()
+  $.ajax({
+    type: 'POST',
+    url: `${BASE_URL}/user`,
+    data: { email: email },
+    dataType: 'json',
+    beforeSend: function(req) {
+      req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+    }
+  })
+  .done(result => {
+    const UserId = result.id
+    const TodoId = $('#listProject').val()
+    $.ajax({
+      type: 'POST',
+      url: `${BASE_URL}/members`,
+      data: { UserId, TodoId },
+      dataType: 'json',
+      beforeSend: function(req) {
+        req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+      }
+    })
+    .done(newMember => {
+      console.log(newMember)
+    })
+    .fail(err => {
+      console.log(err)
+    })
+    $('#loader').hide()
+  })
+  .fail(err => {
+    Swal.fire({
+      icon: 'error',
+      title: 'User Not Found!',
+      text: 'If your partner sign with github, enter github\'s username \n e.g: 2maleek@github.com',
+    })
+    $('#loader').hide()
+  })
 })
 
 function failLogin() {
@@ -59,11 +106,12 @@ function failLogin() {
   $('#loginForm').show()
 }
 function successLogin() {
+  getTodos()
   $('.todos').hide()
   $('#home').show()
   $('#navbar').show()
   reset()
-  getTodos()
+  showName()
 }
 
 function register() {
@@ -184,7 +232,7 @@ function logout() {
   localStorage.removeItem('access_token')
   var auth2 = gapi.auth2.getAuthInstance();
   auth2.signOut().then(function () {
-    console.log('User signed out.');
+    // console.log('User signed out.');
   });
   failLogin()
   reset()
@@ -207,73 +255,107 @@ function reset() {
 }
 
 function getTodos() {
+  getMembers()
   $.ajax({
     type: 'GET',
-    url: `${BASE_URL}/users`,
+    url: `${BASE_URL}/todos`,
+    dataType: 'json',
+    beforeSend: function(req) {
+      req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+    }
+
+  })
+  .done(todos => {
+    $('#showTodos').empty()
+    $('#listProject').empty()
+    let i = 1;
+    todos.forEach(todo => {
+      let datetime = (todo.due_date).substring(0, 10).split('-')
+      date = `${datetime[2]}-${datetime[1]}-${datetime[0]}`
+
+      let text = `Your Todo \n\nTitle: ${todo.title}\nDescription: ${todo.description}\nDue Date: ${date}\nStatus: ${todo.status}`
+      let encoded = encodeURI(text)
+      $('#showTodos').append(`
+        <tr>
+          <th scope="row">${i++}</th>
+          <td>${todo.title}</td>
+          <td>${todo.description}</td>
+          <td>${date}</td>
+          <td>${todo.status}</td>
+          <td><img src="http://api.qrserver.com/v1/create-qr-code/?data=${encoded}&size=100x100"></td>
+          <td>
+            <button type="button" class="btn btn-sm btn-primary" onclick="editForm('${todo.id}')">Edit</button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="deleteTodo('${todo.id}')">Delete</button>
+          </td>
+        </tr>
+      `)
+      $('#listProject').append(`
+        <option value="${todo.id}">${todo.title}</option>
+      `)
+    })
+  })
+  .fail(err => {
+    $('#errorMessage').append(`
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Your Session has been expired</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    `)
+    logout()
+  })
+}
+
+function addMember() {
+  $.ajax({
+    type: 'POST',
+    url: `${BASE_URL}/members`,
     dataType: 'json',
     beforeSend: function(req) {
       req.setRequestHeader('access_token', localStorage.getItem('access_token'))
     }
   })
-  .done((users) => {
-    let listUser = ''
-    users.forEach(user => {
-      listUser += `<a class="dropdown-item" href="#">${user.name}</a>\n`
-    })
-    return $.ajax({
-      type: 'GET',
-      url: `${BASE_URL}/todos`,
-      dataType: 'json',
-      beforeSend: function(req) {
-        req.setRequestHeader('access_token', localStorage.getItem('access_token'))
-      }
-    })
-    .done(todos => {
-      $('#showTodos').empty()
-      let i = 1;
-      todos.forEach(todo => {
-        let datetime = (todo.due_date).substring(0, 10).split('-')
-        date = `${datetime[2]}-${datetime[1]}-${datetime[0]}`
-  
-        let text = `Your Todo \n\nTitle: ${todo.title}\nDescription: ${todo.description}\nDue Date: ${date}\nStatus: ${todo.status}`
-        let encoded = encodeURI(text)
-        $('#showTodos').append(`
-          <tr>
-            <th scope="row">${i++}</th>
-            <td>${todo.title}</td>
-            <td>${todo.description}</td>
-            <td>${date}</td>
-            <td>${todo.status}</td>
-            <td><img src="http://api.qrserver.com/v1/create-qr-code/?data=${encoded}&size=100x100"></td>
-            <td>
-              <button type="button" class="btn btn-sm btn-primary" onclick="editForm('${todo.id}')">Edit</button>
-              <button type="button" class="btn btn-sm btn-danger" onclick="deleteTodo('${todo.id}')">Delete</button>
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Invite Member</button>
-                <div class="dropdown-menu">
-                  ${listUser}
-                </div>
-            </td>
-          </tr>
-        `)
-      })
-    })
-    .fail(err => {
-      $('#errorMessage').append(`
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-          <strong>Your Session has been expired</strong>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
+  .done((data) => {
+    console.log(data)
+  })
+  .fail(err => {
+    console.log(err)
+  })
+}
+
+function getMembers() {
+  $('#showMember').empty()
+  $.ajax({
+    type: 'GET',
+    url: `${BASE_URL}/members`,
+    dataType: 'json',
+    beforeSend: function(req) {
+      req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+    }
+  })
+  .done((members) => {
+    console.log(members)
+    members.forEach(info => {
+      console.log(info.id)
+      if(info.Todo !== null && info.User !== null) {
+        $('#showMember').append(`
+        <tr>
+          <td>Mamama</td>
+          <td>${info.Todo.title}</td>
+          <td>${info.User.name}</td>
+          <td><button type="button" class="btn btn-sm btn-danger" onclick="deleteMember('${info.id}')">Delete from project</button></td>
+        </tr>
       `)
-      logout()
+      }else{
+        console.log('Masukinn')
+      }
     })
   })
   .fail((err) => {
     console.log(err)
   })
 }
-
 
 function add() {
   let data = {
@@ -282,7 +364,6 @@ function add() {
     status: $('#status').val(),
     due_date: $('#due_date').val(),
   }
-  console.log(data)
   $.ajax({
     type: 'POST',
     url: `${BASE_URL}/todos`,
@@ -306,7 +387,7 @@ function add() {
     
     Toast.fire({
       icon: 'success',
-      title: 'Added New Todo'
+      title: 'Created New Todo'
     })
     successLogin()
   })
@@ -339,7 +420,6 @@ function editForm(id) {
     $('#descriptionUpdate').val(`${todo.description}`)
     $('#statusUpdate').val(`${todo.status}`)
     $('#due_dateUpdate').val(`${todo["due_date"].substr(0, 10)}`)
-    console.log($('#idUpdate').val())
   })
   .fail(err => {
     console.log(err)
@@ -468,12 +548,51 @@ function githubSignIn() {
     }
   })
   .done( res => {
-    console.log(res)
     window.opener.localStorage.setItem('access_token', res.access_token)
     window.opener.successLogin()
-    myWindow.close() 
+    window.opener.$('#loader').hide()
+    myWindow.close()
   })
   .fail(err => {
     console.log
   })
+}
+
+function showName() {
+  $.ajax({
+    type: 'get',
+    url: `${BASE_URL}/user`,
+    beforeSend: function(req) {
+      req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+    }
+  })
+  .done(userData => {
+    $('#username').empty()
+    $('#username').append(`${userData.name}`)
+  })
+  .fail(() => {
+    $('#username').empty()
+    $('#username').append(`Cannot get name`)
+  })
+}
+
+function getProjects() {
+  $.ajax({
+    type: 'GET',
+    url: `${BASE_URL}/projects`,
+    dataType: 'json',
+    beforeSend: function(req) {
+      req.setRequestHeader('access_token', localStorage.getItem('access_token'))
+    }
+  })
+  .done(projects => {
+    console.log(projects)
+  })
+  .fail(err => {
+    console.log(err)
+  })
+}
+
+function loadingPage() {
+  $('.todos').hide()
 }
