@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken')
 const { Todo } = require('../models')
 const decode = require('../helpers/decode')
 
@@ -15,7 +14,7 @@ module.exports = (req, res, next) => {
       if(data.UserId === UserId) {
         next()
       }else {
-        next({ status: 401, message: 'Forbidden access!'})
+        next({ status: 403, message: 'Forbidden access!'})
       }
     }else {
       next({ status: 404, message: 'Todo not found! '})
